@@ -13,7 +13,7 @@ const options = {
     minuteIncrement: 1,
     onClose(selectedDates){
         if(selectedDates[0] < Date.now()){
-            alert("Please choose a date in the future");
+            alert("Пожалуйста выберите дату в будующем");
           return; 
         }
         btnEL.disabled = false;
