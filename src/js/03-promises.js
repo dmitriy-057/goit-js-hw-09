@@ -1,50 +1,36 @@
-// import Notiflix from 'notiflix';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+const form = document.querySelector('.form');
+const delayEl = document.querySelector("input[name='delay']");
+const stepEl = document.querySelector("input[name='step']");
+const amountEl = document.querySelector("input[name='amount']");
 
+form.addEventListener("submit", onFormSubmit)
 
-
-const form = document.querySelector('.form')
-console.log(form)
-const firstDelay = document.querySelector('[name=delay]')
-console.log(firstDelay)
-const delayStep = document.querySelector("input[name=step]")
-const amount = document.querySelector("input[name=amount]")
-const btn = document.querySelector("button")
-btn.addEventListener("click", onBtnClick)
-
-function onBtnClick(e) {
+function onFormSubmit(e) {
   e.preventDefault()
-  for(let position = 0; position <= amount.value; position+=1) {
-    let del = delayStep.value;
-    console.log(del);
-
-    createPromise(position, delayStep.value)
-    .then(({ position, delay }) => {
-      console.log(`✅ Fulfilled promise ${position} in ${delay}ms`);
-    })
-    .catch(({ position, delay }) => {
-      console.log(`❌ Rejected promise ${position} in ${delay}ms`);
-    });
-
+  let step = Number(stepEl.value)
+  let amount = Number(amountEl.value)
+  let delay = Number(delayEl.value)
+  for( let i = 1; i <= amount; i += 1) {
+    createPromise(i, delay)
+    .then(i => Notify.success(i))
+    .catch(i => Notify.failure(i));
+    delay+=step;
   }
-
-}
-
-function createPromise(position, delay) {
-  const shouldResolve = Math.random() > 0.3;
-  setInterval(() => {
-    return new Promise((resolve, reject) => {
+  form.reset()
   
-    if (shouldResolve) {
-      // Fulfill
-    return true
-    } else {
-      // Reject
-      return false
-    }
-})
-  }, delayStep.value);
- 
-
-
 }
 
+
+function createPromise(i, delay) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const shouldResolve = Math.random() > 0.3;
+      if (shouldResolve) {
+        resolve(`✅ Fulfilled promise ${i} in ${delay}ms`)
+      } else {
+        reject(`❌ Rejected promise ${i} in ${delay}ms`)
+      }
+    }, delay)
+  })
+}
